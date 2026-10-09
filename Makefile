@@ -1,6 +1,5 @@
 CC ?= gcc
-CFLAGS ?= -std=c11 -Wall -Wextra -Wpedantic -Werror -O2 -g
-D_POSIX_C_SOURCE=200809L -D_DEFAULT_SOURCE -Iinclude
+CFLAGS ?= -std=c11 -Wall -Wextra -Wpedantic -Werror -O2 -g -D_POSIX_C_SOURCE=200809L -D_DEFAULT_SOURCE -Iinclude
 LIBS = -lsodium
 
 # Default target
