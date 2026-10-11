@@ -41,12 +41,17 @@ memcheck: $(TEST_BINS)
 		echo "--> Valgrind on $$t"; \
 		valgrind --leak-check=full --show-leak-kinds=all --error-exitcode=1 ./$$t || exit 1; \
 	done
-	@echo "=== ALL MEMMORY CHECKS PASSED ==="
+	@echo "=== ALL MEMORY CHECKS PASSED ==="
+
+# Build the demo TUN interface program
+demo-tun: examples/demo_tun.c src/tun.c | build
+	$(CC) $(CFLAGS) examples/demo_tun.c src/tun.c -o build/demo_tun
+	@echo "=== DEMO TUN PROGRAM BUILT ==="
 
 # Clean up build artifacts
 clean:
 	rm -rf build gdev-vpn-client gdev-vpn-server *.o
 
 # Mark targets as phony to avoid conflicts with files of the same name
-.PHONY: all test memcheck clean
+.PHONY: all test memcheck clean demo-tun
 
