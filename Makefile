@@ -48,10 +48,15 @@ demo-tun: examples/demo_tun.c src/tun.c | build
 	$(CC) $(CFLAGS) examples/demo_tun.c src/tun.c -o build/demo_tun
 	@echo "=== DEMO TUN PROGRAM BUILT ==="
 
+# Build the demo crypto program
+demo-crypto: examples/demo_crypto.c src/crypto.c | build
+	$(CC) $(CFLAGS) examples/demo_crypto.c src/crypto.c $(LIBS) -o build/demo_crypto
+	@echo "=== DEMO CRYPTO PROGRAM BUILT ==="
+
 # Clean up build artifacts
 clean:
 	rm -rf build gdev-vpn-client gdev-vpn-server *.o
 
 # Mark targets as phony to avoid conflicts with files of the same name
-.PHONY: all test memcheck clean demo-tun
+.PHONY: all test memcheck clean demo-tun demo-crypto
 
