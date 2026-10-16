@@ -53,10 +53,14 @@ demo-crypto: examples/demo_crypto.c src/crypto.c | build
 	$(CC) $(CFLAGS) examples/demo_crypto.c src/crypto.c $(LIBS) -o build/demo_crypto
 	@echo "=== DEMO CRYPTO PROGRAM BUILT ==="
 
+demo-udp: examples/demo_udp.c src/udp.c | build
+	$(CC) $(CFLAGS) examples/demo_udp.c src/udp.c -o build/demo_udp
+	@echo "=== DEMO UDP PROGRAM BUILT ==="
+
 # Clean up build artifacts
 clean:
 	rm -rf build gdev-vpn-client gdev-vpn-server *.o
 
 # Mark targets as phony to avoid conflicts with files of the same name
-.PHONY: all test memcheck clean demo-tun demo-crypto
+.PHONY: all test memcheck clean demo-tun demo-crypto demo-udp
 
