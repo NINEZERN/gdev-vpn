@@ -1,6 +1,7 @@
 CC ?= gcc
 CFLAGS ?= -std=c11 -Wall -Wextra -Wpedantic -Werror -O2 -g -D_POSIX_C_SOURCE=200809L -D_DEFAULT_SOURCE -Iinclude
 LIBS = -lsodium
+UNITY_DIR = third_party/unity
 
 # Auto-detect source files in the src directory, excluding any *_main.c files
 SRCS = $(filter-out src/%_main.c, $(wildcard src/*.c))
@@ -16,6 +17,10 @@ all: test
 # Create the build directory if it doesn't exist
 build:
 	mkdir -p build
+
+# Build the first test migrated to Unity.
+build/test_sanity: tests/test_sanity.c $(UNITY_DIR)/unity.c $(UNITY_DIR)/unity.h $(UNITY_DIR)/unity_internals.h | build
+	$(CC) $(CFLAGS) -I$(UNITY_DIR) tests/test_sanity.c $(UNITY_DIR)/unity.c $(LIBS) -o $@
 
 # Compile source files into object files
 build/%.o: src/%.c | build
