@@ -22,6 +22,9 @@ build:
 build/test_sanity: tests/test_sanity.c $(UNITY_DIR)/unity.c $(UNITY_DIR)/unity.h $(UNITY_DIR)/unity_internals.h | build
 	$(CC) $(CFLAGS) -I$(UNITY_DIR) tests/test_sanity.c $(UNITY_DIR)/unity.c $(LIBS) -o $@
 
+build/test_crypto: tests/test_crypto.c src/crypto.c include/crypto.h $(UNITY_DIR)/unity.c $(UNITY_DIR)/unity.h $(UNITY_DIR)/unity_internals.h | build
+	$(CC) $(CFLAGS) -I$(UNITY_DIR) tests/test_crypto.c src/crypto.c $(UNITY_DIR)/unity.c $(LIBS) -o $@
+
 # Compile source files into object files
 build/%.o: src/%.c | build
 	$(CC) $(CFLAGS) -c $< -o $@
