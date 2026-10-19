@@ -1,23 +1,27 @@
 #include "tun.h"
 
-#include <assert.h>
 #include <errno.h>
 #include <linux/if.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
+#include "unity.h"
 
+
+void setUp(void) {
+    // This function is called before each test case.
+}
+
+void tearDown(void) {
+    // This function is called after each test case.
+}
 
 static void test_tun_create(void) {
-    printf("[TEST] tun_create()...\n");
-
     // NULL name
-    assert(tun_create(NULL) == -1);
-    assert(errno == EINVAL);
+    TEST_ASSERT_EQUAL_INT(-1, tun_create(NULL));
+    TEST_ASSERT_EQUAL_INT(EINVAL, errno);
 
     // Empty name
-    assert(tun_create("") == -1);
-    assert(errno == EINVAL);
+    TEST_ASSERT_EQUAL_INT(-1, tun_create(""));
+    TEST_ASSERT_EQUAL_INT(EINVAL, errno);
 
     // Name exceeding IFNAMSIZ
     char long_name[IFNAMSIZ + 1];
@@ -25,71 +29,52 @@ static void test_tun_create(void) {
         long_name[i] = 'a';
     }
     long_name[sizeof(long_name) - 1] = '\0';
-    assert(tun_create(long_name) == -1);
-    assert(errno == ENAMETOOLONG);
+    TEST_ASSERT_EQUAL_INT(-1, tun_create(long_name));
+    TEST_ASSERT_EQUAL_INT(ENAMETOOLONG, errno);
 
     // Successful creation of a TUN interface (only if running as root)
     if (geteuid() == 0) {
         int fd = tun_create("tun_test_0");
-        assert(fd >= 0);
-        tun_close(fd);
-        printf("  [PASS] real interface creation\n");
+        TEST_ASSERT_TRUE(fd >= 0);
+        TEST_ASSERT_EQUAL_INT(0, tun_close(fd));
     }
-
-    printf("  [PASS] tun_create\n");
 }
 
 
 static void test_tun_read(void) {
-    printf("[TEST] tun_read()...\n");
-
-    char buf[VPN_MTU];
+    char buf[VPN_MTU] = {0};
     // Attempt to read from an invalid file descriptor (-1)
-    assert(tun_read(-1, buf, sizeof(buf)) == -1);
-    assert(errno == EBADF);
-
-    printf("  [PASS] tun_read\n");
+    TEST_ASSERT_EQUAL_INT(-1, tun_read(-1, buf, sizeof(buf)));
+    TEST_ASSERT_EQUAL_INT(EBADF, errno);
 }
 
 
 static void test_tun_write(void) {
-    printf("[TEST] tun_write()...\n");
-
-    char buf[VPN_MTU];
+    char buf[VPN_MTU] = {0};
     // Attempt to write to an invalid file descriptor (-1)
-    assert(tun_write(-1, buf, sizeof(buf)) == -1);
-    assert(errno == EBADF);
-
-    printf("  [PASS] tun_write\n");
+    TEST_ASSERT_EQUAL_INT(-1, tun_write(-1, buf, sizeof(buf)));
+    TEST_ASSERT_EQUAL_INT(EBADF, errno);
 }
 
 
 static void test_tun_close(void) {
-    printf("[TEST] tun_close()...\n");
-
     // Attempt to close an invalid file descriptor (-1)
-    assert(tun_close(-1) == -1);
-    assert(errno == EBADF);
+    TEST_ASSERT_EQUAL_INT(-1, tun_close(-1));
+    TEST_ASSERT_EQUAL_INT(EBADF, errno);
 
     // Close a real interface (if root)
     if (geteuid() == 0) {
         int fd = tun_create("tun_test_1");
-        assert(fd >= 0);
-        assert(tun_close(fd) == 0);
-        printf("  [PASS] real interface clean closure\n");
+        TEST_ASSERT_TRUE(fd >= 0);
+        TEST_ASSERT_EQUAL_INT(0, tun_close(fd));
     }
-
-    printf("  [PASS] tun_close\n");
 }
 
 int main(void) {
-    printf("=== RUNNING TUN MODULE TESTS ===\n");
-
-    test_tun_create();
-    test_tun_read();
-    test_tun_write();
-    test_tun_close();
-
-    printf("=== ALL TUN TESTS PASSED ===\n");
-    return EXIT_SUCCESS;
+    UNITY_BEGIN();
+    RUN_TEST(test_tun_create);
+    RUN_TEST(test_tun_read);
+    RUN_TEST(test_tun_write);
+    RUN_TEST(test_tun_close);
+    return UNITY_END();
 }
