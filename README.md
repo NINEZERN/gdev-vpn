@@ -44,8 +44,8 @@ Remove generated build artifacts:
 make clean
 ```
 
-Tests currently use standard C assertions and must be built
-without `NDEBUG`.
+Tests use the Unity framework, whose sources and license are included
+in `third_party/unity/`. No separate Unity installation is required.
 
 UDP tests use the local loopback interface and require permission
 to create network sockets. Tests that create real TUN interfaces
@@ -130,6 +130,7 @@ This example sends plaintext messages without encryption.
 include/    Public module headers
 src/        TUN, crypto and UDP implementations
 tests/      Module tests
+third_party/ Vendored dependencies, including Unity
 examples/   Standalone demonstrations
 .github/    CI workflows
 Makefile    Build and test targets
@@ -137,7 +138,7 @@ Makefile    Build and test targets
 
 ## Roadmap
 
-- Migrate tests from standard C assertions to Unity.
+- Migrate the build system to CMake.
 - Define the tunnel packet format and session lifecycle.
 - Implement authenticated session establishment and key management.
 - Add per-direction keys, nonce counters and replay protection.

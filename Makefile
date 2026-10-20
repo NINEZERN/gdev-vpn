@@ -28,6 +28,9 @@ build/test_crypto: tests/test_crypto.c src/crypto.c include/crypto.h $(UNITY_DIR
 build/test_tun: tests/test_tun.c src/tun.c include/tun.h $(UNITY_DIR)/unity.c $(UNITY_DIR)/unity.h $(UNITY_DIR)/unity_internals.h | build
 	$(CC) $(CFLAGS) -I$(UNITY_DIR) tests/test_tun.c src/tun.c $(UNITY_DIR)/unity.c $(LIBS) -o $@
 
+build/test_udp: tests/test_udp.c src/udp.c include/udp.h $(UNITY_DIR)/unity.c $(UNITY_DIR)/unity.h $(UNITY_DIR)/unity_internals.h | build
+	$(CC) $(CFLAGS) -I$(UNITY_DIR) tests/test_udp.c src/udp.c $(UNITY_DIR)/unity.c -o $@
+
 # Compile source files into object files
 build/%.o: src/%.c | build
 	$(CC) $(CFLAGS) -c $< -o $@
